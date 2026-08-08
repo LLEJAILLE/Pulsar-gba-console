@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     ConsoleWindow window(libraryManager.games());
     window.setWindowTitle(QStringLiteral("PulsarOS"));
-    window.show();
+    window.showFullScreen();
 
     return app.exec();
 }
