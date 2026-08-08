@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QPainter>
+#include <QPainterPath>
 #include <QKeyEvent>
 #include <QTimer>
 #include <QResizeEvent>
@@ -111,8 +112,9 @@ HomePage::HomePage(const std::vector<Game> &games, QWidget *parent)
         "  padding: 16px 24px;"
         "  margin: 8px 0px;"
         "  border-radius: 12px;"
-        "  background-color: rgba(15, 25, 50, 200);"
-        "  border: 2px solid rgba(50, 80, 120, 150);"
+        "  background-color: rgba(50, 50, 50, 200);"
+        "  backdrop-filter: blur(10px);"
+        "  border: 2px solid rgba(60, 60, 60, 150);"
         "  color: white;"
         "  font-size: 16px;"
         "  font-weight: 500;"
@@ -123,10 +125,10 @@ HomePage::HomePage(const std::vector<Game> &games, QWidget *parent)
         "  border: 2px solid rgba(0, 200, 255, 100);"
         "}"
         "QListWidget::item:selected {"
-        "  background-color: rgba(20, 40, 70, 240);"
-        "  border: 2px solid #00c8ff;"
+        "  background-color: rgba(0, 120, 180, 140);"
+        "  border: 3px solid #40e0ff;"
         "  color: white;"
-        "  box-shadow: 0 0 20px rgba(0, 200, 255, 0.8);"
+        "  padding: 14px 22px;"
         "}"
         "QScrollBar:vertical {"
         "  background-color: transparent;"
@@ -302,9 +304,25 @@ void HomePage::updateCover()
                         QString::fromStdString(game.title));
     }
 
-    // Scale to fit the label
-    QPixmap scaled = pixmap.scaledToWidth(280, Qt::SmoothTransformation);
-    m_titleLabel->setPixmap(scaled);
+    // Scale and apply rounded corners to the cover image
+    const int coverSize = 280;
+    QPixmap scaled = pixmap.scaled(QSize(coverSize, coverSize), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    QPixmap roundedPixmap(coverSize, coverSize);
+    roundedPixmap.fill(Qt::transparent);
+
+    QPainter painter(&roundedPixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPainterPath path;
+    path.addRoundedRect(QRectF(0, 0, coverSize, coverSize), 24.0, 24.0);
+    painter.setClipPath(path);
+
+    const int x = (coverSize - scaled.width()) / 2;
+    const int y = (coverSize - scaled.height()) / 2;
+    painter.drawPixmap(x, y, scaled);
+    painter.end();
+
+    m_titleLabel->setPixmap(roundedPixmap);
 }
 
 void HomePage::resizeEvent(QResizeEvent *event)
