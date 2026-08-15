@@ -45,12 +45,10 @@ void setButtonFromQtKey(int qtKey, bool pressed)
 
         case Qt::Key_S:
             InputManager::setButton(InputManager::Button::X, pressed);
-            std::cout << "X button pressed: " << pressed << std::endl;
             break;
 
         case Qt::Key_Q:
             InputManager::setButton(InputManager::Button::Y, pressed);
-            std::cout << "Y button pressed: " << pressed << std::endl;
             break;
 
         case Qt::Key_Control:
